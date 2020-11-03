@@ -33,9 +33,9 @@ class Parser(object):
 
 class StepsParser(Parser):
 
-    def __init__(self, model, subsection_parser_classes, unhandled_tokens):
+    def __init__(self, model, unhandled_tokens):
         Parser.__init__(self, model)
-        self._subsection_parser_classes = subsection_parser_classes
+        self._subsection_parser_classes = {Token.FOR: ForLoopParser, Token.IF: IfParser}
         self._unhandled_tokens = unhandled_tokens
 
     def handles(self, statement):
@@ -51,26 +51,17 @@ class StepsParser(Parser):
 
 
 def TestCaseParser(header):
-    return StepsParser(TestCase(header),
-                     {Token.FOR: ForLoopParser,
-                      Token.IF: IfParser},
-                     Token.HEADER_TOKENS + (Token.TESTCASE_NAME,))
+    return StepsParser(TestCase(header), Token.HEADER_TOKENS + (Token.TESTCASE_NAME,))
 
 
 def KeywordParser(header):
-    return StepsParser(Keyword(header),
-                     {Token.FOR: ForLoopParser,
-                      Token.IF: IfParser},
-                     Token.HEADER_TOKENS + (Token.KEYWORD_NAME,))
+    return StepsParser(Keyword(header), Token.HEADER_TOKENS + (Token.KEYWORD_NAME,))
 
 
 class StepsWithEndParser(StepsParser):
 
     def __init__(self, model):
-        StepsParser.__init__(self, model,
-                             {Token.FOR: ForLoopParser,
-                              Token.IF: IfParser},
-                             Token.HEADER_TOKENS + (Token.TESTCASE_NAME, Token.KEYWORD_NAME))
+        StepsParser.__init__(self, model, Token.HEADER_TOKENS + (Token.TESTCASE_NAME, Token.KEYWORD_NAME))
 
     def handles(self, statement):
         if self.model.end:
