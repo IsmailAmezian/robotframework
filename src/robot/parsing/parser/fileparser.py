@@ -75,39 +75,20 @@ class SectionParser(Parser):
         self.model.body.append(statement)
 
 
-class SettingSectionParser(SectionParser):
+def SettingSectionParser(header):
+    return SectionParser(SettingSection(header), {})
 
-    def __init__(self, header):
-        SectionParser.__init__(self, SettingSection(header), {})
+def VariableSectionParser(header):
+    return SectionParser(VariableSection(header), {})
 
+def CommentSectionParser(header):
+    return SectionParser(CommentSection(header), {})
 
-class VariableSectionParser(SectionParser):
+def ImplicitCommentSectionParser(statement):
+    return SectionParser(CommentSection(body=[statement]), {})
 
-    def __init__(self, header):
-        SectionParser.__init__(self, VariableSection(header), {})
+def TestCaseSectionParser(header):
+    return SectionParser(TestCaseSection(header), {Token.TESTCASE_NAME:TestCaseParser})
 
-
-class CommentSectionParser(SectionParser):
-
-    def __init__(self, header):
-        SectionParser.__init__(self, CommentSection(header), {})
-
-
-class ImplicitCommentSectionParser(SectionParser):
-
-    def __init__(self, statement):
-        SectionParser.__init__(self, CommentSection(body=[statement]), {})
-
-
-class TestCaseSectionParser(SectionParser):
-
-    def __init__(self, header):
-        SectionParser.__init__(self, TestCaseSection(header),
-                               {Token.TESTCASE_NAME:TestCaseParser})
-
-
-class KeywordSectionParser(SectionParser):
-
-    def __init__(self, header):
-        SectionParser.__init__(self, KeywordSection(header),
-                               {Token.KEYWORD_NAME:KeywordParser})
+def KeywordSectionParser(header):
+    return SectionParser(KeywordSection(header), {Token.KEYWORD_NAME:KeywordParser})
