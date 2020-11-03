@@ -13,6 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robot.errors import DataError
+
 from .tokens import Token
 from .statementlexers import (Lexer,
                               SettingSectionHeaderLexer, SettingLexer,
@@ -25,7 +27,6 @@ from .statementlexers import (Lexer,
                               KeywordCallLexer,
                               ForLoopHeaderLexer,
                               EndLexer, IfStatementLexer, ElseLexer, ElseIfStatementLexer)
-from ...errors import DataError
 
 
 class BlockLexer(Lexer):
