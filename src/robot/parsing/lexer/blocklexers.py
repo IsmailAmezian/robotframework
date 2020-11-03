@@ -225,7 +225,7 @@ class ForLoopLexer(BlockLexer):
             statement.pop(0)
 
     def lexer_classes(self):
-        return (ForLoopHeaderLexer, IfStatementLexer, ElseIfStatementLexer, ElseLexer, EndLexer, KeywordCallLexer)
+        return (ForLoopHeaderLexer, IfBlockLexer, EndLexer, KeywordCallLexer)
 
 
 class IfBlockLexer(BlockLexer):
@@ -271,4 +271,4 @@ class IfBlockLexer(BlockLexer):
             self._last_block_has_content = True
 
     def lexer_classes(self):
-        return (IfStatementLexer, ElseIfStatementLexer, ElseLexer, ForLoopHeaderLexer, EndLexer, KeywordCallLexer)
+        return (IfStatementLexer, ElseIfStatementLexer, ElseLexer, ForLoopLexer, EndLexer, KeywordCallLexer)

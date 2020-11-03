@@ -60,6 +60,12 @@ If with else if after else
     ...    .* Invalid ELSE IF detected after ELSE
     ...    ${PARSING}/if/else_if_after_else.robot
 
+If for else if parsing
+    Run tests and check parsing error
+    ...    ${PARSING}/if/for_else_invalid.robot
+    ...    .* Invalid ELSE IF detected after ELSE
+    ...    ${PARSING}/if/for_else_invalid.robot
+
 If with empty if
     Run tests and check parsing error
     ...    ${PARSING}/if/empty_if.robot
