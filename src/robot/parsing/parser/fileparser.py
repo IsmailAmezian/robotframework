@@ -59,64 +59,55 @@ class FileParser(Parser):
 
 class SectionParser(Parser):
 
+    def __init__(self, model, subsection_parser_classes):
+        Parser.__init__(self, model)
+        self._subsection_parser_classes = subsection_parser_classes
+
     def handles(self, statement):
         return statement.type not in Token.HEADER_TOKENS
 
     def parse(self, statement):
+        parser_class = self._subsection_parser_classes.get(statement.type)
+        if parser_class:
+            parser = parser_class(statement)
+            self.model.body.append(parser.model)
+            return parser
         self.model.body.append(statement)
 
 
 class SettingSectionParser(SectionParser):
 
     def __init__(self, header):
-        SectionParser.__init__(self, SettingSection(header))
+        SectionParser.__init__(self, SettingSection(header), {})
 
 
 class VariableSectionParser(SectionParser):
 
     def __init__(self, header):
-        SectionParser.__init__(self, VariableSection(header))
+        SectionParser.__init__(self, VariableSection(header), {})
 
 
 class CommentSectionParser(SectionParser):
 
     def __init__(self, header):
-        SectionParser.__init__(self, CommentSection(header))
+        SectionParser.__init__(self, CommentSection(header), {})
 
 
 class ImplicitCommentSectionParser(SectionParser):
 
     def __init__(self, statement):
-        SectionParser.__init__(self, CommentSection(body=[statement]))
+        SectionParser.__init__(self, CommentSection(body=[statement]), {})
 
 
 class TestCaseSectionParser(SectionParser):
 
     def __init__(self, header):
-        SectionParser.__init__(self, TestCaseSection(header))
-
-    def parse(self, statement):
-        if statement.type == Token.TESTCASE_NAME:
-            parser = TestCaseParser(statement)
-            model = parser.model
-        else:    # Empty lines and comments before first test.
-            parser = None
-            model = statement
-        self.model.body.append(model)
-        return parser
+        SectionParser.__init__(self, TestCaseSection(header),
+                               {Token.TESTCASE_NAME:TestCaseParser})
 
 
 class KeywordSectionParser(SectionParser):
 
     def __init__(self, header):
-        SectionParser.__init__(self, KeywordSection(header))
-
-    def parse(self, statement):
-        if statement.type == Token.KEYWORD_NAME:
-            parser = KeywordParser(statement)
-            model = parser.model
-        else:    # Empty lines and comments before first keyword.
-            parser = None
-            model = statement
-        self.model.body.append(model)
-        return parser
+        SectionParser.__init__(self, KeywordSection(header),
+                               {Token.KEYWORD_NAME:KeywordParser})
